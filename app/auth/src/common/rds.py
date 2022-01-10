@@ -36,21 +36,21 @@ class RDS:
         return conn_str
 
 
-    def get_users(self, *, include_processed=False):
-        def get_cursor():
-            cursor = self.connection.cursor()
-            query = ("")
-            cursor.execute(query, [])
-            return cursor
-
-        def get_row(cursor, row):
-            return {str(name[0]): value for name, value in zip(cursor.description, row)}
-
-        cursor = get_cursor()
-        while True:
-            row = cursor.fetchone()
-            if not row:
-                break
-            user = get_row(cursor, row)
-            yield user
-
+    # def get_users(self, *, include_processed=False):
+    #     def get_cursor():
+    #         cursor = self.connection.cursor()
+    #         query = ("")
+    #         cursor.execute(query, [])
+    #         return cursor
+    #
+    #     def get_row(cursor, row):
+    #         return {str(name[0]): value for name, value in zip(cursor.description, row)}
+    #
+    #     cursor = get_cursor()
+    #     while True:
+    #         row = cursor.fetchone()
+    #         if not row:
+    #             break
+    #         user = get_row(cursor, row)
+    #         yield user
+    #
