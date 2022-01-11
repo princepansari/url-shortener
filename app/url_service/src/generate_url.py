@@ -13,7 +13,7 @@ from common.utilities import Utils
 from common.rds import RDS
 
 
-class GenerateURL(Resource):
+class GenerateUrl(Resource):
     def __init__(self):
         self.rds = RDS()
 
@@ -28,16 +28,14 @@ class GenerateURL(Resource):
         expiry_duration = data.get('expiry_duration')
         user_id = self.rds.get_user_by_email(email=email)
 
-        response = UtilsURL.get_short_url(rds=self.rds,
-                                          user_id=user_id,
-                                          original_link=original_link,
-                                          custom_alias=custom_alias,
-                                          expiry_duration=expiry_duration)
-
-        return Response(json.dumps(response), mimetype='application/json', status=HTTPStatus.OK)
+        return UtilsURL.get_short_url(rds=self.rds,
+                                      user_id=user_id,
+                                      original_link=original_link,
+                                      custom_alias=custom_alias,
+                                      expiry_duration=expiry_duration)
 
 
-class CreateURL(Resource):
+class GenerateUrlDev(Resource):
     def __init__(self):
         self.rds = RDS()
 
@@ -48,18 +46,16 @@ class CreateURL(Resource):
         original_link = data['original_link']
         custom_alias = data.get('custom_alias')
         expiry_duration = data.get('expiry_duration')
+
         user_id = self.rds.get_user_by_key(developer_key=developer_key)
         if user_id is None:
-            return Response(json.dumps({'error': 'Invalid user'}),
-                            mimetype='application/json',
-                            status=HTTPStatus.BAD_REQUEST)
+            return {'error': 'Invalid user'}, HTTPStatus.UNAUTHORIZED
 
-        response = UtilsURL.get_short_url(rds=self.rds,
-                                          user_id=user_id,
-                                          original_link=original_link,
-                                          custom_alias=custom_alias,
-                                          expiry_duration=expiry_duration)
-        return Response(json.dumps(response), mimetype='application/json', status=HTTPStatus.OK)
+        return UtilsURL.get_short_url(rds=self.rds,
+                                      user_id=user_id,
+                                      original_link=original_link,
+                                      custom_alias=custom_alias,
+                                      expiry_duration=expiry_duration)
 
 
 class UtilsURL:
@@ -69,19 +65,16 @@ class UtilsURL:
         if custom_alias:
             exist = rds.check_shortened_link(shortened_link=custom_alias)
             if exist:
-                return {'output': 'CUSTOM alias already exist!!'}
-            rds.add_shortened_link(user_id=user_id,
-                                   original_link=original_link,
-                                   shortened_link=custom_alias,
-                                   expiry_duration=expiry_duration)
-            return {'output': 'CUSTOM alias created', 'short_url': custom_alias}
+                return {'error': 'CUSTOM alias already exist!!'}, HTTPStatus.BAD_REQUEST
+            shortened_link = custom_alias
         else:
             alias = Utils.encode(url=original_link)
             while rds.check_shortened_link(shortened_link=alias):
                 alias = Utils.encode(url=original_link)
+            shortened_link = alias
 
-            rds.add_shortened_link(user_id=user_id,
-                                   original_link=original_link,
-                                   shortened_link=alias,
-                                   expiry_duration=expiry_duration)
-            return {'output': 'CUSTOM alias created', 'short_url': alias}
+        rds.add_shortened_link(user_id=user_id,
+                               original_link=original_link,
+                               shortened_link=shortened_link,
+                               expiry_duration=expiry_duration)
+        return {'short_url': shortened_link}, HTTPStatus.OK
