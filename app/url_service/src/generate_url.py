@@ -70,18 +70,18 @@ class UtilsURL:
             exist = rds.check_shortened_link(shortened_link=custom_alias)
             if exist:
                 return {'output': 'CUSTOM alias already exist!!'}
-            rds.add_alias(user_id=user_id,
-                          original_link=original_link,
-                          shortened_link=custom_alias,
-                          expiry_duration=expiry_duration)
+            rds.add_shortened_link(user_id=user_id,
+                                   original_link=original_link,
+                                   shortened_link=custom_alias,
+                                   expiry_duration=expiry_duration)
             return {'output': 'CUSTOM alias created', 'short_url': custom_alias}
         else:
             alias = Utils.encode(url=original_link)
             while rds.check_shortened_link(shortened_link=alias):
                 alias = Utils.encode(url=original_link)
 
-            rds.add_alias(user_id=user_id,
-                          original_link=original_link,
-                          shortened_link=alias,
-                          expiry_duration=expiry_duration)
+            rds.add_shortened_link(user_id=user_id,
+                                   original_link=original_link,
+                                   shortened_link=alias,
+                                   expiry_duration=expiry_duration)
             return {'output': 'CUSTOM alias created', 'short_url': alias}

@@ -58,7 +58,7 @@ class RDS:
         cursor.execute(query, [shortened_link])
         return cursor.fetchone() is not None
 
-    def add_alias(self, *, user_id, original_link, shortened_link, expiry_duration):
+    def add_shortened_link(self, *, user_id, original_link, shortened_link, expiry_duration):
         cursor = self.connection.cursor()
         if expiry_duration:
             query = "INSERT INTO creations (user_id, original_link, shortened_link, expiry_duration)" \
