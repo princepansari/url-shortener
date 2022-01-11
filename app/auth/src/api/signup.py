@@ -1,30 +1,49 @@
+import math
+import random
+
 from flask import request
 from flask_restful import Resource
 from flask_bcrypt import generate_password_hash
 from app.auth.src.common.utilities import Utils
+from app.auth.src.common.email import Email
 from app.auth.src.common.rds import RDS
-import os
-import hashlib
-import base64
+
 
 class SignupApi(Resource):
     def __init__(self):
         self.rds = RDS()
-        self.DEVELOPER_KEY_GEN_SECRET = os.environ.get('DEVELOPER_KEY_GEN_SECRET')
 
     def post(self):
         data = Utils.sanitize_dict(request.get_json())
         email = data['email']
         password = self.hash_password(data['password'])
-        developer_key = self.hash_password(self.get_developer_key(email))
-        self.rds.create_user(email=email,
-                             password=password,
-                             developer_key=developer_key)
-
-    def get_developer_key(self, email):
-        hash = hashlib.sha256((email+self.DEVELOPER_KEY_GEN_SECRET).encode()).hexdigest()
-        developer_key = base64.b64encode(hash.encode("ascii")).decode("ascii")
-        return developer_key
+        user_id = self.rds.create_user(email=email,
+                             password=password)
+        self.initiate_verification(user_id=user_id, email=email)
 
     def hash_password(self, password):
         return generate_password_hash(password).decode('utf8')
+
+    def initiate_verification(self, *, user_id, email):
+        otp = self.get_otp()
+        self.rds.save_otp(user_id=user_id, otp=otp)
+        # TODO: think of a better way to identify the user for verication instead of sending email in url
+        msg = f"OTP={otp} \n Link=https://three-unicorns.com/auth/verify/{email}"
+        subject = "user verification for three-unicorns url-shortner service"
+        to = [email]
+        print("sending email....")
+        self.send_email(msg=msg, to=to, subject=subject)
+        print("email sent successfully....")
+
+    def send_email(self, *, msg, to, subject):
+        email = Email()
+        email.login()
+        body = email.create_msg(message_text=msg, to=to, subject=subject)
+        email.send_msg(message=body)
+
+    def get_otp(self):
+        digits = "0123456789"
+        OTP = ""
+        for i in range(6):
+            OTP += digits[math.floor(random.random() * 10)]
+        return OTP

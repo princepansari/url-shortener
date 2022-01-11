@@ -16,11 +16,17 @@ class LoginApi(Resource):
         email = data['email']
         password = data['password']
         user = self.rds.get_user(email=email)
-        authorized = self.check_password(password_hash=user['password'], password=password)
+
+        if not user['verified']:
+            return {'error': 'User verification not completed'}, 401
+
+        password_hash = user['password']
+        authorized = self.check_password(password_hash=password_hash, password=password)
 
         if not authorized:
             return {'error': 'Email or password invalid'}, 401
 
+        self.rds.update_last_login(email=user['email'])
         expires = datetime.timedelta(days=7)
         access_token = create_access_token(identity=str(user['email']), expires_delta=expires)
         return {'token': access_token}, 200

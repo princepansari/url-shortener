@@ -1,9 +1,11 @@
+from datetime import datetime
 import os
 import boto3
 import psycopg2
+from psycopg2.extras import RealDictCursor
 import sys
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from common.config import Config
+from app.auth.src.common.config import Config
+
 
 class RDS:
 
@@ -35,22 +37,58 @@ class RDS:
         conn_str = f"host={host} dbname={database} user={user} password={password} port={port}"
         return conn_str
 
+    def get_user(self, *, email):
+        def get_cursor():
+            cursor = self.connection.cursor(cursor_factory=RealDictCursor)
+            query = ("SELECT * FROM users WHERE email=%s")
+            cursor.execute(query, [email])
+            return cursor
 
-    # def get_users(self, *, include_processed=False):
-    #     def get_cursor():
-    #         cursor = self.connection.cursor()
-    #         query = ("")
-    #         cursor.execute(query, [])
-    #         return cursor
-    #
-    #     def get_row(cursor, row):
-    #         return {str(name[0]): value for name, value in zip(cursor.description, row)}
-    #
-    #     cursor = get_cursor()
-    #     while True:
-    #         row = cursor.fetchone()
-    #         if not row:
-    #             break
-    #         user = get_row(cursor, row)
-    #         yield user
-    #
+        cursor = get_cursor()
+        user = cursor.fetchone()
+        return user
+
+    def create_user(self, *, email, password):
+        cursor = self.connection.cursor(cursor_factory=RealDictCursor)
+        query = "INSERT INTO users (email, password) VALUES (%s, %s) RETURNING user_id"
+        cursor.execute(query, [email, password])
+        self.connection.commit()
+        user_id = cursor.fetchone()['user_id']
+        return user_id
+
+    def update_last_login(self, *, email):
+        cursor = self.connection.cursor()
+        query = "UPDATE users SET last_login=%s WHERE email=%s"
+        curr_time = datetime.utcnow()
+        cursor.execute(query, [curr_time, email])
+        self.connection.commit()
+
+    def add_dev_key(self, user_id, developer_key):
+        cursor = self.connection.cursor()
+        query = "INSERT INTO developer_keys (user_id, developer_key) VALUES (%s, %s)"
+        cursor.execute(query, [user_id, developer_key])
+        self.connection.commit()
+
+    def save_otp(self, *, user_id, otp):
+        cursor = self.connection.cursor()
+        query = "INSERT INTO signup_verification (user_id, otp) VALUES (%s, %s)"
+        cursor.execute(query, [user_id, otp])
+        self.connection.commit()
+
+    def get_user_otp(self, user_id):
+        def get_cursor():
+            cursor = self.connection.cursor(cursor_factory=RealDictCursor)
+            query = ("SELECT otp FROM signup_verification WHERE user_id=%s")
+            cursor.execute(query, [user_id])
+            return cursor
+
+        cursor = get_cursor()
+        row = cursor.fetchone()
+        otp = row['otp']
+        return otp
+
+    def update_verification_status(self, *, email):
+        cursor = self.connection.cursor()
+        query = "UPDATE users SET verified=true WHERE email=%s"
+        cursor.execute(query, [email])
+        self.connection.commit()
