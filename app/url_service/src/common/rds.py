@@ -75,7 +75,7 @@ class RDS:
             query = "SELECT original_link, shortened_link, created_at, expiry_duration " \
                     "FROM creations WHERE user_id=%s"
             cursor.execute(query, [user_id])
-            return  cursor
+            return cursor
         cursor = get_cursor()
         user_links = {'user_links': []}
         while True:
@@ -97,5 +97,11 @@ class RDS:
         self.connection.commit()
         return cursor.rowcount
 
-
+    def get_original_link(self, *, shortened_link):
+        cursor = self.connection.cursor(cursor_factory=RealDictCursor)
+        query = "SELECT original_link FROM creations WHERE shortened_link=%s"
+        cursor.execute(query, [shortened_link])
+        data = cursor.fetchone()
+        print(data)
+        return data['original_link'] if data else None
 

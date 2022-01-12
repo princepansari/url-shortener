@@ -9,7 +9,6 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from common.utilities import Utils
 from common.rds import RDS
 
 
@@ -17,20 +16,13 @@ class GetOriginalUrl(Resource):
     def __init__(self):
         self.rds = RDS()
 
-    # @jwt_required
     def get(self):
-        # email = "princep@iitbhilai.ac.in"
-        # email = get_jwt_identity()
-        pass
+        shortened_link = request.args['shortened_link']
+        print(shortened_link)
+        original_link = self.rds.get_original_link(shortened_link=shortened_link)
+        print(original_link)
+        if original_link is None:
+            return {'error': 'Invalid shortened link'}, HTTPStatus.BAD_REQUEST
+        return {'original_link': original_link}, HTTPStatus.OK
 
 
-class GetOriginalUrlDev(Resource):
-    def __init__(self):
-        self.rds = RDS()
-
-    def get(self):
-        data = request.get_json()
-        developer_key = data['developer_key']
-        shortened_link = data['shortened_link']
-
-        pass
