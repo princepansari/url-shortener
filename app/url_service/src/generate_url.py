@@ -1,5 +1,4 @@
-import json
-from flask import Response, request
+from flask import  request
 from flask_restful import Resource
 from http import HTTPStatus
 # from flask_jwt_extended import jwt_required
@@ -77,4 +76,4 @@ class UtilsURL:
                                original_link=original_link,
                                shortened_link=shortened_link,
                                expiry_duration=expiry_duration)
-        return {'short_url': shortened_link}, HTTPStatus.OK
+        return {'shortened_link': shortened_link}, HTTPStatus.OK
