@@ -4,15 +4,20 @@ from flask_bcrypt import check_password_hash
 from flask_restful import Resource
 from app.auth.src.common.utilities import Utils
 from app.auth.src.common.rds import RDS
+from schema import Schema, And, Use
+import bleach
 import datetime
 
 
 class LoginApi(Resource):
     def __init__(self):
         self.rds = RDS()
-
+        self.schema = Schema({
+            'email': And(str, Use(bleach.clean), Utils.validate_email),
+            'password': And(str, Use(bleach.clean), Utils.validate_password)
+        }, ignore_extra_keys=True)
     def post(self):
-        data = Utils.sanitize_dict(request.get_json())
+        data = self.schema.validate(request.get_json())
         email = data['email']
         password = data['password']
         user = self.rds.get_user(email=email)

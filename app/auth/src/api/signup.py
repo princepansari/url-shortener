@@ -7,18 +7,24 @@ from flask_bcrypt import generate_password_hash
 from app.auth.src.common.utilities import Utils
 from app.auth.src.common.email import Email
 from app.auth.src.common.rds import RDS
+from schema import Schema, And, Use
+import bleach
 
 
 class SignupApi(Resource):
     def __init__(self):
         self.rds = RDS()
+        self.schema = Schema({
+            'email': And(str, Use(bleach.clean), Utils.validate_email),
+            'password': And(str, Use(bleach.clean), Utils.validate_password)
+        }, ignore_extra_keys=True)
 
     def post(self):
-        data = Utils.sanitize_dict(request.get_json())
+        data = self.schema.validate(request.get_json())
         email = data['email']
         password = self.hash_password(data['password'])
         user_id = self.rds.create_user(email=email,
-                             password=password)
+                                       password=password)
         self.initiate_verification(user_id=user_id, email=email)
 
     def hash_password(self, password):

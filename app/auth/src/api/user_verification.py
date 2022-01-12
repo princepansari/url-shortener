@@ -2,17 +2,19 @@ from flask import request
 from flask_restful import Resource
 from app.auth.src.common.utilities import Utils
 from app.auth.src.common.rds import RDS
+from schema import Schema, And, Use
+import bleach
 
 class UserVerification(Resource):
 
     def __init__(self):
         self.rds = RDS()
-
+        self.schema = Schema({
+            'otp': And(int, lambda otp: 000000 <= otp <= 999999)
+        }, ignore_extra_keys=True)
     def post(self):
-        data = Utils.sanitize_dict(request.get_json())
-        print(data)
+        data = self.schema.validate(request.get_json())
         email = request.args.get('email')
-        print("email= ", email)
         verified =  self.check_otp(given_otp=data['otp'], email=email)
         if not verified:
             return {'error': 'Wrong OTP'}, 401 #TODO: check http status cde
