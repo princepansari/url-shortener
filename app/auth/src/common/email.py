@@ -1,5 +1,4 @@
 from __future__ import print_function
-import os.path
 import base64
 import googleapiclient.discovery
 from httplib2 import Http
@@ -7,8 +6,6 @@ from oauth2client.client import GoogleCredentials
 from email.mime.text import MIMEText
 from app.auth.src.common.config import Config
 
-SCOPES = ['https://www.googleapis.com/auth/gmail.send']
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 class Email:
@@ -48,7 +45,6 @@ class Email:
         try:
             mail = (self.service.users().messages().send(userId='me', body=message)
                     .execute())
-            print('Message Id: %s' % mail['id'])
             return mail
         except Exception as error:
             print('An error occurred: %s' % error)

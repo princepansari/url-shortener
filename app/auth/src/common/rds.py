@@ -56,6 +56,18 @@ class RDS:
         user_id = cursor.fetchone()['user_id']
         return user_id
 
+    def is_user_exists(self, *, email):
+        def get_cursor():
+            cursor = self.connection.cursor(cursor_factory=RealDictCursor)
+            query = ("SELECT * FROM users WHERE email=%s")
+            cursor.execute(query, [email])
+            return cursor
+
+        cursor = get_cursor()
+        user = cursor.fetchone()
+        return user is not None
+
+
     def update_last_login(self, *, email):
         cursor = self.connection.cursor()
         query = "UPDATE users SET last_login=%s WHERE email=%s"
@@ -63,10 +75,12 @@ class RDS:
         cursor.execute(query, [curr_time, email])
         self.connection.commit()
 
-    def add_dev_key(self, user_id, developer_key):
+    def upsert_dev_key(self, user_id, developer_key):
         cursor = self.connection.cursor()
-        query = "INSERT INTO developer_keys (user_id, developer_key) VALUES (%s, %s)"
-        cursor.execute(query, [user_id, developer_key])
+        query = "INSERT INTO developer_keys (user_id, developer_key) VALUES (%s, %s) " \
+                "ON CONFLICT (user_id)" \
+                "DO UPDATE SET developer_key = %s"
+        cursor.execute(query, [user_id, developer_key, developer_key])
         self.connection.commit()
 
     def save_otp(self, *, user_id, otp):

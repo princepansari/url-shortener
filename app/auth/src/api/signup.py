@@ -8,6 +8,7 @@ from app.auth.src.common.utilities import Utils
 from app.auth.src.common.email import Email
 from app.auth.src.common.rds import RDS
 from schema import Schema, And, Use
+from http import HTTPStatus
 import bleach
 
 
@@ -23,6 +24,10 @@ class SignupApi(Resource):
         data = self.schema.validate(request.get_json())
         email = data['email']
         password = self.hash_password(data['password'])
+
+        if self.rds.is_user_exists(email=email):
+            return {"error": "There already exists an account with this email address"}, HTTPStatus.BAD_REQUEST
+
         user_id = self.rds.create_user(email=email,
                                        password=password)
         self.initiate_verification(user_id=user_id, email=email)
@@ -37,9 +42,7 @@ class SignupApi(Resource):
         msg = f"OTP={otp} \n Link=https://three-unicorns.com/auth/verify/{email}"
         subject = "user verification for three-unicorns url-shortner service"
         to = [email]
-        print("sending email....")
         self.send_email(msg=msg, to=to, subject=subject)
-        print("email sent successfully....")
 
     def send_email(self, *, msg, to, subject):
         email = Email()

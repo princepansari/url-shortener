@@ -25,3 +25,6 @@ class Config:
 
     #dev key gen config
     DEVELOPER_KEY_GEN_SECRET = os.environ.get('DEVELOPER_KEY_GEN_SECRET') or "AAXCDESA"
+
+    #JWT config
+    EXPIRE_AFTER_DAYS = 7
