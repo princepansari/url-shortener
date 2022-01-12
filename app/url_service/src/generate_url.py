@@ -1,13 +1,11 @@
 from flask import  request
 from flask_restful import Resource
 from http import HTTPStatus
-# from flask_jwt_extended import jwt_required
-
+from flask_jwt_extended import jwt_required, get_jwt_identity
+import validators
 import os
 import sys
-
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
 from common.utilities import Utils
 from common.rds import RDS
 
@@ -16,10 +14,9 @@ class GenerateUrl(Resource):
     def __init__(self):
         self.rds = RDS()
 
-    # @jwt_required
+    @jwt_required
     def post(self):
-        email = "princep@iitbhilai.ac.in"
-        # email = get_jwt_identity()
+        email = get_jwt_identity()
         # TODO: CHECK KEY
         data = request.get_json()
         original_link = data['original_link']
@@ -61,14 +58,17 @@ class UtilsURL:
 
     @staticmethod
     def get_short_url(*, rds, user_id, original_link, custom_alias, expiry_duration):
+        if not validators.url(original_link):
+            return {'error': 'Invalid URL'}, HTTPStatus.BAD_REQUEST
+
         if custom_alias:
-            exist = rds.check_shortened_link(shortened_link=custom_alias)
+            exist = rds.is_shortened_link_exists(shortened_link=custom_alias)
             if exist:
                 return {'error': 'CUSTOM alias already exist!!'}, HTTPStatus.BAD_REQUEST
             shortened_link = custom_alias
         else:
             alias = Utils.encode(url=original_link)
-            while rds.check_shortened_link(shortened_link=alias):
+            while rds.is_shortened_link_exists(shortened_link=alias):
                 alias = Utils.encode(url=original_link)
             shortened_link = alias
 

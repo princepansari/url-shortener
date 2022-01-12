@@ -3,6 +3,7 @@ import boto3
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import sys
+import hashlib
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from common.config import Config
@@ -46,13 +47,14 @@ class RDS:
         return user['user_id'] if user else None
 
     def get_user_by_key(self, *, developer_key):
+        developer_key_hash = hashlib.sha256(developer_key.encode()).hexdigest()
         cursor = self.connection.cursor(cursor_factory=RealDictCursor)
         query = "SELECT user_id FROM developer_keys WHERE developer_key=%s"
-        cursor.execute(query, [developer_key])
+        cursor.execute(query, [developer_key_hash])
         user = cursor.fetchone()
         return user['user_id'] if user else None
 
-    def check_shortened_link(self, *, shortened_link):
+    def is_shortened_link_exists(self, *, shortened_link):
         cursor = self.connection.cursor()
         query = "SELECT creation_id FROM creations WHERE shortened_link=%s"
         cursor.execute(query, [shortened_link])
@@ -102,6 +104,5 @@ class RDS:
         query = "SELECT original_link FROM creations WHERE shortened_link=%s"
         cursor.execute(query, [shortened_link])
         data = cursor.fetchone()
-        print(data)
         return data['original_link'] if data else None
 

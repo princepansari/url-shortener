@@ -19,4 +19,4 @@ class Config:
     PASSWORD = os.environ.get("PASSWORD") or "welcome123"
 
     URL_LENGTH = os.environ.get("URL_LENGTH") or 6
-    SECRET_ENCODE = "aEjFb182bHUWsuibJBXBVZDHU"
+    SECRET_ENCODE = os.environ.get("SECRET_ENCODE") or "aEjFb182bHUWsuibJBXBVZDHU"
