@@ -28,3 +28,7 @@ class Config:
 
     #JWT config
     EXPIRE_AFTER_DAYS = os.environ.get('EXPIRE_AFTER_DAYS') or 7
+
+    #URL Service
+    URL_LENGTH = os.environ.get("URL_LENGTH") or 6
+    SECRET_ENCODE = os.environ.get("SECRET_ENCODE") or "aEjFb182bHUWsuibJBXBVZDHU"

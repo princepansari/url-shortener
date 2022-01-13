@@ -1,10 +1,11 @@
 from flask import request
 from flask_restful import Resource
-from app.auth.src.common.utilities import Utils
-from app.auth.src.common.rds import RDS
+from app.common.utilities import Utils
+from app.common.rds import RDS
 from schema import Schema, And, Use
 from http import HTTPStatus
 import bleach
+
 
 class UserVerification(Resource):
 
@@ -18,7 +19,7 @@ class UserVerification(Resource):
     def post(self):
         data = self.schema.validate(request.get_json())
         email = data['email']
-        verified =  self.check_otp(given_otp=data['otp'], email=email)
+        verified = self.check_otp(given_otp=data['otp'], email=email)
         if not verified:
             return {'error': 'Wrong OTP'}, HTTPStatus.BAD_REQUEST
         self.rds.update_verification_status(email=email)
