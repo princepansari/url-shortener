@@ -4,7 +4,7 @@ import googleapiclient.discovery
 from httplib2 import Http
 from oauth2client.client import GoogleCredentials
 from email.mime.text import MIMEText
-from app.auth.src.common.config import Config
+from app.common.config import Config
 
 
 

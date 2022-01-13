@@ -1,9 +1,9 @@
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource
-from app.auth.src.common.rds import RDS
+from app.common.rds import RDS
 import hashlib
 import base64
-from app.auth.src.common.config import Config
+from app.common.config import Config
 from http import HTTPStatus
 
 

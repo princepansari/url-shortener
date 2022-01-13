@@ -4,9 +4,9 @@ import random
 from flask import request
 from flask_restful import Resource
 from flask_bcrypt import generate_password_hash
-from app.auth.src.common.utilities import Utils
-from app.auth.src.common.email import Email
-from app.auth.src.common.rds import RDS
+from app.common.utilities import Utils
+from app.common.email import Email
+from app.common.rds import RDS
 from schema import Schema, And, Use
 from http import HTTPStatus
 import bleach

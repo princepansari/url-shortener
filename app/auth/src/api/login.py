@@ -3,9 +3,9 @@ from flask_jwt_extended import create_access_token
 from flask_bcrypt import check_password_hash
 from flask_restful import Resource
 
-from app.auth.src.common.config import Config
-from app.auth.src.common.utilities import Utils
-from app.auth.src.common.rds import RDS
+from app.common.config import Config
+from app.common.utilities import Utils
+from app.common.rds import RDS
 from schema import Schema, And, Use
 from http import HTTPStatus
 import bleach

@@ -3,11 +3,8 @@ from flask_restful import Resource
 from http import HTTPStatus
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import validators
-import os
-import sys
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common.utilities import Utils
-from common.rds import RDS
+from app.common.utilities import Utils
+from app.common.rds import RDS
 
 
 class GenerateUrl(Resource):

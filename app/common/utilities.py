@@ -1,4 +1,8 @@
 import re
+import uuid
+import hashlib
+from hashids import Hashids
+from app.common.config import Config
 
 
 class Utils:
@@ -30,3 +34,17 @@ class Utils:
                     and lower + special + upper + digit == len(password)):
                 return True
         return False
+
+    @staticmethod
+    def get_uuid():
+        return str(uuid.uuid4())
+
+    @staticmethod
+    def encode(*, url):
+        custom_alphabet = "23456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"
+        hashids = Hashids(salt=Config.SECRET_ENCODE, alphabet=custom_alphabet)
+
+        digest = hashlib.md5((url + Utils.get_uuid()).encode()).hexdigest()
+        encoded_string = hashids.encode(int(digest, 16))
+
+        return encoded_string[:Config.URL_LENGTH]
