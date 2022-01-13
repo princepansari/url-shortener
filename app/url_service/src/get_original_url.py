@@ -14,5 +14,3 @@ class GetOriginalUrl(Resource):
         if original_link is None:
             return {'error': 'Invalid shortened link'}, HTTPStatus.BAD_REQUEST
         return {'original_link': original_link}, HTTPStatus.OK
-
-
