@@ -14,7 +14,7 @@ class GenerateUrl(Resource):
     def __init__(self):
         self.rds = RDS()
 
-    @jwt_required
+    @jwt_required()
     def post(self):
         email = get_jwt_identity()
         # TODO: CHECK KEY

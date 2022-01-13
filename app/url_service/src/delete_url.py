@@ -12,7 +12,7 @@ class DeleteUrl(Resource):
     def __init__(self):
         self.rds = RDS()
 
-    @jwt_required
+    @jwt_required()
     def delete(self):
         email = get_jwt_identity()
         data = request.get_json()

@@ -12,7 +12,7 @@ class GetMyUrls(Resource):
     def __init__(self):
         self.rds = RDS()
 
-    @jwt_required
+    @jwt_required()
     def get(self):
         email = get_jwt_identity()
         user_id = self.rds.get_user_by_email(email=email)
