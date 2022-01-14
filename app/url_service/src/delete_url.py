@@ -5,15 +5,23 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.common.rds import RDS
 from app.common.config import Config
 from app.common.utilities import Utils
+from schema import Schema, And, Use
+import bleach
+
 
 class DeleteUrl(Resource):
     def __init__(self):
         self.rds = RDS()
+        self.schema = Schema({
+            'shortened_link': And(str, Use(bleach.clean), len),
+        })
 
     @jwt_required()
     def delete(self):
         email = get_jwt_identity()
-        data = request.get_json()
+        if not self.schema.is_valid(request.get_json()):
+            return {'error': 'Invalid payload'}, HTTPStatus.BAD_REQUEST
+        data = self.schema.validate(request.get_json())
         shortened_link = Utils.remove_prefix(data['shortened_link'], Config.READ_URL)
         if shortened_link is None:
             return {'error': 'Invalid shortened link'}, HTTPStatus.BAD_REQUEST
@@ -26,9 +34,15 @@ class DeleteUrl(Resource):
 class DeleteUrlDev(Resource):
     def __init__(self):
         self.rds = RDS()
+        self.schema = Schema({
+            'developer_key': And(str, Use(bleach.clean), len),
+            'shortened_link': And(str, Use(bleach.clean), len),
+        })
 
     def delete(self):
-        data = request.get_json()
+        if not self.schema.is_valid(request.get_json()):
+            return {'error': 'Invalid payload'}, HTTPStatus.BAD_REQUEST
+        data = self.schema.validate(request.get_json())
         developer_key = data['developer_key']
         shortened_link = Utils.remove_prefix(data['shortened_link'], Config.READ_URL)
         if shortened_link is None:

@@ -36,12 +36,20 @@ class Utils:
         return False
 
     @staticmethod
+    def validate_custom_alias(alias):
+        if len(alias) < Config.URL_LENGTH or len(alias) > Config.MAX_URL_LENGTH:
+            return False
+        if not alias.isalnum():
+            return False
+        return True
+
+    @staticmethod
     def get_uuid():
         return str(uuid.uuid4())
 
     @staticmethod
     def encode(*, url):
-        custom_alphabet = "23456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"
+        custom_alphabet = Config.CHARACTERS_FOR_ALIAS
         hashids = Hashids(salt=Config.SECRET_ENCODE, alphabet=custom_alphabet)
 
         digest = hashlib.md5((url + Utils.get_uuid()).encode()).hexdigest()

@@ -6,17 +6,26 @@ import validators
 from app.common.utilities import Utils
 from app.common.rds import RDS
 from app.common.config import Config
+from schema import Schema, And, Use, Optional
+import bleach
 
 
 class GenerateUrl(Resource):
     def __init__(self):
         self.rds = RDS()
+        self.schema = Schema({
+            'original_link': And(str, Use(bleach.clean), len),
+            Optional('custom_alias'): And(str, Utils.validate_custom_alias),
+            Optional('expiry_duration'): And(int,
+                                             lambda n: Config.MIN_EXPIRY_DURATION <= n <= Config.MAX_EXPIRY_DURATION)
+        })
 
     @jwt_required()
     def post(self):
         email = get_jwt_identity()
-        # TODO: CHECK KEY
-        data = request.get_json()
+        if not self.schema.is_valid(request.get_json()):
+            return {'error': 'Invalid payload'}, HTTPStatus.BAD_REQUEST
+        data = self.schema.validate(request.get_json())
         original_link = data['original_link']
         custom_alias = data.get('custom_alias')
         expiry_duration = data.get('expiry_duration')
@@ -32,10 +41,18 @@ class GenerateUrl(Resource):
 class GenerateUrlDev(Resource):
     def __init__(self):
         self.rds = RDS()
+        self.schema = Schema({
+            'developer_key': And(str, Use(bleach.clean), len),
+            'original_link': And(str, Use(bleach.clean), len),
+            Optional('custom_alias'): And(str, Utils.validate_custom_alias),
+            Optional('expiry_duration'): And(int,
+                                             lambda n: Config.MIN_EXPIRY_DURATION <= n <= Config.MAX_EXPIRY_DURATION)
+        })
 
     def post(self):
-        # TODO: CHECK KEY
-        data = request.get_json()
+        if not self.schema.is_valid(request.get_json()):
+            return {'error': 'Invalid payload'}, HTTPStatus.BAD_REQUEST
+        data = self.schema.validate(request.get_json())
         developer_key = data['developer_key']
         original_link = data['original_link']
         custom_alias = data.get('custom_alias')
