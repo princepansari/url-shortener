@@ -14,7 +14,7 @@ class DeleteUrl(Resource):
     def delete(self):
         email = get_jwt_identity()
         data = request.get_json()
-        shortened_link = Utils.remove_prefix(data['shortened_link'], Config.URL_ENDPOINT)
+        shortened_link = Utils.remove_prefix(data['shortened_link'], Config.READ_URL)
         if shortened_link is None:
             return {'error': 'Invalid shortened link'}, HTTPStatus.BAD_REQUEST
         user_id = self.rds.get_user_by_email(email=email)
@@ -30,7 +30,7 @@ class DeleteUrlDev(Resource):
     def delete(self):
         data = request.get_json()
         developer_key = data['developer_key']
-        shortened_link = Utils.remove_prefix(data['shortened_link'], Config.URL_ENDPOINT)
+        shortened_link = Utils.remove_prefix(data['shortened_link'], Config.READ_URL)
         if shortened_link is None:
             return {'error': 'Invalid shortened link'}, HTTPStatus.BAD_REQUEST
         user_id = self.rds.get_user_by_key(developer_key=developer_key)

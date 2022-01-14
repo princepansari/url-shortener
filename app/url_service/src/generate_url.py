@@ -74,4 +74,4 @@ class UtilsURL:
                                original_link=original_link,
                                shortened_link=shortened_link,
                                expiry_duration=expiry_duration)
-        return {'shortened_link': Config.URL_ENDPOINT + shortened_link}, HTTPStatus.OK
+        return {'shortened_link': Config.READ_URL + shortened_link}, HTTPStatus.OK

@@ -53,5 +53,4 @@ class Utils:
     def remove_prefix(string, prefix):
         if string.startswith(prefix):
             return string[len(prefix):]
-        else:
-            return None
+        return None
