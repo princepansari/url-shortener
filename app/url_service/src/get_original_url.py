@@ -24,4 +24,15 @@ class GetOriginalUrlDev(Resource):
         original_link = self.rds.get_original_link(shortened_link=shortened_link)
         if original_link is None:
             return {'error': 'Invalid shortened link'}, HTTPStatus.BAD_REQUEST
-        return {'original_link': original_link}, HTTPStatus.OK
+
+        is_malicious, malicious_class = self.is_malicious_link(original_link)
+
+        return {'original_link': original_link,
+                'is_malicious': is_malicious,
+                'class_of_malicious_link': malicious_class}, HTTPStatus.OK
+
+
+    def is_malicious_link(self, *, link):
+        link_detail = self.rds.get_link_detail(link=link)
+        return (True, link_detail['class_of_malicious_link']) if link_detail else (False, None)
+

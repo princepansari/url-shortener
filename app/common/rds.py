@@ -165,3 +165,10 @@ class RDS:
         data = cursor.fetchone()
         return data['original_link'] if data else None
 
+
+    def get_link_detail(self, *, link):
+        cursor = self.connection.cursor(cursor_factory=RealDictCursor)
+        query = "SELECT * FROM malicious_links WHERE link=%s"
+        cursor.execute(query, [link])
+        link_detail = cursor.fetchone()
+        return link_detail
