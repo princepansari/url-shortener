@@ -3,7 +3,8 @@ from flask_restful import Resource
 from http import HTTPStatus
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.common.rds import RDS
-
+from app.common.config import Config
+from app.common.utilities import Utils
 
 class DeleteUrl(Resource):
     def __init__(self):
@@ -13,7 +14,7 @@ class DeleteUrl(Resource):
     def delete(self):
         email = get_jwt_identity()
         data = request.get_json()
-        shortened_link = data['shortened_link']
+        shortened_link = Utils.remove_prefix(data['shortened_link'], Config.URL_ENDPOINT)
 
         user_id = self.rds.get_user_by_email(email=email)
         return UtilsDelete.delete_shortened_link(rds=self.rds,
@@ -28,7 +29,7 @@ class DeleteUrlDev(Resource):
     def delete(self):
         data = request.get_json()
         developer_key = data['developer_key']
-        shortened_link = data['shortened_link']
+        shortened_link = Utils.remove_prefix(data['shortened_link'], Config.URL_ENDPOINT)
 
         user_id = self.rds.get_user_by_key(developer_key=developer_key)
         if user_id is None:

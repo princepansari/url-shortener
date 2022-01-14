@@ -152,7 +152,7 @@ class RDS:
                 break
             user_links['user_links'].append({
                 'original_link': row['original_link'],
-                'shortened_link': row['shortened_link'],
+                'shortened_link': Config.URL_ENDPOINT + row['shortened_link'],
                 'created_at': row['created_at'].isoformat(),
                 'expiry_duration': row['expiry_duration']
             })
