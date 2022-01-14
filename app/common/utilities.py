@@ -1,3 +1,4 @@
+from datetime import datetime, timezone, timedelta
 import re
 import uuid
 import hashlib
@@ -60,5 +61,12 @@ class Utils:
         if validators.url(url):
             return True
         if not url.startswith("http") and validators.url("https://" + url):
+            return True
+        return False
+
+    @staticmethod
+    def is_expired(*, creation_time, expiry_duration):
+        current_time = datetime.now(timezone.utc)
+        if current_time > creation_time + timedelta(days=expiry_duration):
             return True
         return False
