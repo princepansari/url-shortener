@@ -29,8 +29,8 @@ class SignupApi(Resource):
 
         if user and user['verified']:
             return {"error": "There already exists an account with this email address"}, HTTPStatus.BAD_REQUEST
-        elif not user:
-            user_id = self.rds.create_user(email=email,
+
+        user_id = self.rds.create_user(email=email,
                                            password=password)
         self.initiate_verification(user_id=user_id, email=email)
 

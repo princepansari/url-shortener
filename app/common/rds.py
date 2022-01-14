@@ -48,8 +48,10 @@ class RDS:
 
     def create_user(self, *, email, password):
         cursor = self.connection.cursor(cursor_factory=RealDictCursor)
-        query = "INSERT INTO users (email, password) VALUES (%s, %s) RETURNING user_id"
-        cursor.execute(query, [email, password])
+        query = "INSERT INTO users (email, password) VALUES (%s, %s) RETURNING user_id"\
+                "ON CONFLICT (email)" \
+                "DO UPDATE SET password = %s"
+        cursor.execute(query, [email, password, password])
         self.connection.commit()
         user_id = cursor.fetchone()['user_id']
         return user_id
