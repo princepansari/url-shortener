@@ -3,7 +3,7 @@ import uuid
 import hashlib
 from hashids import Hashids
 from app.common.config import Config
-
+import validators
 
 class Utils:
 
@@ -54,3 +54,11 @@ class Utils:
         if string.startswith(prefix):
             return string[len(prefix):]
         return None
+
+    @staticmethod
+    def is_valid_url(*, url):
+        if validators.url(url):
+            return True
+        if not url.startswith("http") and validators.url("https://" + url):
+            return True
+        return False
