@@ -48,3 +48,9 @@ class Utils:
         encoded_string = hashids.encode(int(digest, 16))
 
         return encoded_string[:Config.URL_LENGTH]
+
+    @staticmethod
+    def remove_prefix(string, prefix):
+        if string.startswith(prefix):
+            return string[len(prefix):]
+        return None
