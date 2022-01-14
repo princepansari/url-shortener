@@ -48,22 +48,13 @@ class RDS:
 
     def create_user(self, *, email, password):
         cursor = self.connection.cursor(cursor_factory=RealDictCursor)
-        query = "INSERT INTO users (email, password) VALUES (%s, %s) RETURNING user_id"
-        cursor.execute(query, [email, password])
+        query = "INSERT INTO users (email, password) VALUES (%s, %s) RETURNING user_id"\
+                "ON CONFLICT (email)" \
+                "DO UPDATE SET password = %s"
+        cursor.execute(query, [email, password, password])
         self.connection.commit()
         user_id = cursor.fetchone()['user_id']
         return user_id
-
-    def is_user_exists(self, *, email):
-        def get_cursor():
-            cursor = self.connection.cursor(cursor_factory=RealDictCursor)
-            query = ("SELECT * FROM users WHERE email=%s")
-            cursor.execute(query, [email])
-            return cursor
-
-        cursor = get_cursor()
-        user = cursor.fetchone()
-        return user is not None
 
 
     def update_last_login(self, *, email):
@@ -83,8 +74,10 @@ class RDS:
 
     def save_otp(self, *, user_id, otp):
         cursor = self.connection.cursor()
-        query = "INSERT INTO signup_verification (user_id, otp) VALUES (%s, %s)"
-        cursor.execute(query, [user_id, otp])
+        query = "INSERT INTO signup_verification (user_id, otp) VALUES (%s, %s)" \
+                "ON CONFLICT (user_id)" \
+                "DO UPDATE SET otp = %s"
+        cursor.execute(query, [user_id, otp, otp])
         self.connection.commit()
 
     def get_user_otp(self, user_id):
@@ -172,3 +165,10 @@ class RDS:
         data = cursor.fetchone()
         return data['original_link'] if data else None
 
+
+    def get_link_detail(self, *, link):
+        cursor = self.connection.cursor(cursor_factory=RealDictCursor)
+        query = "SELECT * FROM malicious_links WHERE link=%s"
+        cursor.execute(query, [link])
+        link_detail = cursor.fetchone()
+        return link_detail

@@ -2,7 +2,6 @@ from flask import request
 from flask_restful import Resource
 from http import HTTPStatus
 from flask_jwt_extended import jwt_required, get_jwt_identity
-import validators
 from app.common.utilities import Utils
 from app.common.rds import RDS
 from app.common.config import Config
@@ -56,7 +55,10 @@ class UtilsURL:
 
     @staticmethod
     def get_short_url(*, rds, user_id, original_link, custom_alias, expiry_duration):
-        if not validators.url(original_link):
+        if original_link.startswith(Config.DOMAIN_NAME):
+            return {'error': 'This domain is banned'}, HTTPStatus.BAD_REQUEST
+
+        if not Utils.is_valid_url(url=original_link):
             return {'error': 'Invalid URL'}, HTTPStatus.BAD_REQUEST
 
         if custom_alias:

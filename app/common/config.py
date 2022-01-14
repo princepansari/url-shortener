@@ -6,7 +6,7 @@ logger.setLevel(logging.INFO)
 
 class Config:
 
-    DOMAIN_NAME = os.environ.get("DOMAIN_NAME") or "https://three-unicron.com"
+    DOMAIN_NAME = os.environ.get("DOMAIN_NAME") or "https://three-unicorn.com"
     READ_URL = DOMAIN_NAME + "/url/"
     # Common config
     TMP_DIR = os.environ.get("TMP_DIR") or "/tmp"

@@ -25,11 +25,13 @@ class SignupApi(Resource):
         email = data['email']
         password = self.hash_password(data['password'])
 
-        if self.rds.is_user_exists(email=email):
+        user = self.rds.get_user(email=email)
+
+        if user and user['verified']:
             return {"error": "There already exists an account with this email address"}, HTTPStatus.BAD_REQUEST
 
         user_id = self.rds.create_user(email=email,
-                                       password=password)
+                                           password=password)
         self.initiate_verification(user_id=user_id, email=email)
 
     def hash_password(self, password):
@@ -38,6 +40,7 @@ class SignupApi(Resource):
     def initiate_verification(self, *, user_id, email):
         otp = self.get_otp()
         self.rds.save_otp(user_id=user_id, otp=otp)
+
         # TODO: think of a better way to identify the user for verication instead of sending email in url
         msg = f"OTP={otp} \n Link=https://three-unicorns.com/auth/verify/{email}"
         subject = "user verification for three-unicorns url-shortner service"
