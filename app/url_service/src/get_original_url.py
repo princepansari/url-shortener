@@ -13,7 +13,8 @@ class GetOriginalUrl(Resource):
 
     def get(self, shortened_link):
         if not self.schema.is_valid(shortened_link):
-            return {'error': 'Invalid payload'}, HTTPStatus.BAD_REQUEST
+            # TODO - change the json output to the html page for invalid link
+            return {'error': 'Invalid shortened link'}, HTTPStatus.BAD_REQUEST
         shortened_link = self.schema.validate(shortened_link)
         original_link = self.rds.get_original_link(shortened_link=shortened_link)
         if original_link is None:
@@ -29,7 +30,7 @@ class GetOriginalUrlDev(Resource):
 
     def get(self, shortened_link):
         if not self.schema.is_valid(shortened_link):
-            return {'error': 'Invalid payload'}, HTTPStatus.BAD_REQUEST
+            return {'error': 'Invalid shortened link'}, HTTPStatus.BAD_REQUEST
         shortened_link = self.schema.validate(shortened_link)
         original_link = self.rds.get_original_link(shortened_link=shortened_link)
         if original_link is None:
