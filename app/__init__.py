@@ -5,7 +5,6 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from .auth.routes import initialize_routes
 from app.url_service.routes import url_service_routes
-from app.swagger.routes import initialize_swagger_routes
 from flask_cors import CORS
 
 # Define the WSGI application object
