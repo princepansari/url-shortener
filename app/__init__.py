@@ -21,4 +21,3 @@ jwt = JWTManager(app)
 
 initialize_routes(api)
 url_service_routes(api)
-initialize_swagger_routes(api)
