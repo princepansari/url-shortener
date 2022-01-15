@@ -7,9 +7,12 @@ from src.generate_url import GenerateUrl, GenerateUrlDev
 from src.get_original_url import GetOriginalUrl, GetOriginalUrlDev
 from src.get_my_urls import GetMyUrls, GetMyUrlsDev
 from src.delete_url import DeleteUrl, DeleteUrlDev
+from src.website_construction import WebsiteConstruction
 
 
 def url_service_routes(api):
+    api.add_resource(WebsiteConstruction, '/')
+
     api.add_resource(GenerateUrl, '/generate_url')
     api.add_resource(GenerateUrlDev, '/generate_url_dev')
 
