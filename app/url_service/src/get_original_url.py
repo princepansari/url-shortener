@@ -44,7 +44,7 @@ class GetOriginalUrlDev(Resource):
 class GetOriginalUrlUtils:
 
     @staticmethod
-    def is_malicious_link(self, *, rds, link):
+    def is_malicious_link(*, rds, link):
         link_detail = rds.get_link_detail(link=link)
         return (True, link_detail['class_of_malicious_link']) if link_detail else (False, None)
 
