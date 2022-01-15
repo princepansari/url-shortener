@@ -21,10 +21,10 @@ class Config:
     PASSWORD = os.environ.get("PASSWORD") or "welcome123"
 
     #email config
-    GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID") or "439200753107-i98jsdh8ba6sq1tn7g3vmronj1pc5c75.apps.googleusercontent.com"
-    GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET") or "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"
-    REFRESH_TOKEN = os.environ.get("REFRESH_TOKEN") or "1//0gmV2vGTVMpZ4CgYIARAAGBASNwF-L9IrNounJcdQ8Dcqg6-SXWtD94WEgb_yYVVUIkFdJRYhVCMeLNBVZ0U7M0tr0EpcS-4iAU0"
-
+    FROM_EMAIL = "shortify.tech@gmail.com"
+    GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID") or "393388259530-e13a3lv6fje5mc87itt3d9fkj83j3gaa.apps.googleusercontent.com"
+    GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET") or "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"
+    REFRESH_TOKEN = os.environ.get("REFRESH_TOKEN") or "1//04eHJ8tySHcAoCgYIARAAGAQSNwF-L9IrBT3fOprU0yW0Arsy5brsrwFuQP5JH4MtIarWApQX-D_WPRl6N7zMlzD-2OAH-yDP9Bo"
     #dev key gen config
     DEVELOPER_KEY_GEN_SECRET = os.environ.get('DEVELOPER_KEY_GEN_SECRET') or "AAXCDESA"
 

@@ -12,7 +12,7 @@ class Email:
 
     def __init__(self):
         self.service = None
-        self.FROM_EMAIL = "siramk@iitbhilai.ac.in"  # TODO: check if it can be changed
+        self.FROM_EMAIL = Config.FROM_EMAIL
         self.GOOGLE_CLIENT_ID = Config.GOOGLE_CLIENT_ID
         self.GOOGLE_CLIENT_SECRET = Config.GOOGLE_CLIENT_SECRET
         self.GOOGLE_TOKEN_URI = "https://accounts.google.com/o/oauth2/token"
