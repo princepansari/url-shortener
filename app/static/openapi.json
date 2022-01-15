@@ -409,54 +409,6 @@
         ]
       }
     },
-    "/url/{alias}": {
-      "get": {
-        "tags": [
-          "url-service"
-        ],
-        "summary": "Get the original URL",
-        "operationId": "Url",
-        "parameters": [
-          {
-            "name": "alias",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "Only alias",
-            "example": "djiwej"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UrlDevResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Error Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UrlDevError"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "JWTAuth": []
-          }
-        ]
-      }
-    },
     "/get_my_urls": {
       "get": {
         "tags": [

@@ -24,7 +24,7 @@ img {
     margin-top: 130px;
 }
 
-h1 {
+h1, h3 {
     color: var(--dark-grey);
     font-weight: 700;
     margin-top: 3rem;
