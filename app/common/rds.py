@@ -49,9 +49,10 @@ class RDS:
 
     def create_user(self, *, email, password):
         cursor = self.connection.cursor(cursor_factory=RealDictCursor)
-        query = "INSERT INTO users (email, password) VALUES (%s, %s) RETURNING user_id"\
-                "ON CONFLICT (email)" \
-                "DO UPDATE SET password = %s"
+        query = "INSERT INTO users (email, password) VALUES (%s, %s) "\
+                "ON CONFLICT (email) " \
+                "DO UPDATE SET password = %s "\
+                "RETURNING user_id"
         cursor.execute(query, [email, password, password])
         self.connection.commit()
         user_id = cursor.fetchone()['user_id']
@@ -68,15 +69,15 @@ class RDS:
     def upsert_dev_key(self, user_id, developer_key):
         cursor = self.connection.cursor()
         query = "INSERT INTO developer_keys (user_id, developer_key) VALUES (%s, %s) " \
-                "ON CONFLICT (user_id)" \
+                "ON CONFLICT (user_id) " \
                 "DO UPDATE SET developer_key = %s"
         cursor.execute(query, [user_id, developer_key, developer_key])
         self.connection.commit()
 
     def save_otp(self, *, user_id, otp):
         cursor = self.connection.cursor()
-        query = "INSERT INTO signup_verification (user_id, otp) VALUES (%s, %s)" \
-                "ON CONFLICT (user_id)" \
+        query = "INSERT INTO signup_verification (user_id, otp) VALUES (%s, %s) " \
+                "ON CONFLICT (user_id) " \
                 "DO UPDATE SET otp = %s"
         cursor.execute(query, [user_id, otp, otp])
         self.connection.commit()
@@ -123,11 +124,11 @@ class RDS:
     def add_shortened_link(self, *, user_id, original_link, shortened_link, expiry_duration):
         cursor = self.connection.cursor()
         if expiry_duration:
-            query = "INSERT INTO creations (user_id, original_link, shortened_link, expiry_duration)" \
-                    " VALUES (%s, %s,%s, %s) ON CONFLICT (shortened_link) DO NOTHING"
+            query = "INSERT INTO creations (user_id, original_link, shortened_link, expiry_duration) " \
+                    "VALUES (%s, %s,%s, %s) ON CONFLICT (shortened_link) DO NOTHING"
             cursor.execute(query, [user_id, original_link, shortened_link, expiry_duration])
         else:
-            query = "INSERT INTO creations (user_id, original_link, shortened_link) VALUES (%s, %s,%s)" \
+            query = "INSERT INTO creations (user_id, original_link, shortened_link) VALUES (%s, %s,%s) " \
                     "ON CONFLICT (shortened_link) DO NOTHING"
             cursor.execute(query, [user_id, original_link, shortened_link])
         self.connection.commit()
