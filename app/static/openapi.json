@@ -284,7 +284,7 @@
             "schema": {
               "type": "string"
             },
-            "example": "AAAAAMMMWOOYSMSjMSKMSMSSSSSSSSSSSSSSSFFFFFFFFF=="
+            "example": "ODg4NTU3MDY0OGMyM2UyNmU4NjA0NmZlODY5Nzk5NDUwN2E2NzZmMDZiM2RiNjJhZjI5NzJkMDIwZGU2YzMwNg=="
           }
         ],
         "responses": {
@@ -326,7 +326,7 @@
             "schema": {
               "type": "string"
             },
-            "example": "AAAAAMMMWOOYSMSjMSKMSMSSSSSSSSSSSSSSSFFFFFFFFF=="
+            "example": "ODg4NTU3MDY0OGMyM2UyNmU4NjA0NmZlODY5Nzk5NDUwN2E2NzZmMDZiM2RiNjJhZjI5NzJkMDIwZGU2YzMwNg=="
           },
           {
             "name": "alias",
@@ -526,7 +526,7 @@
         "properties": {
           "developer_key": {
             "type": "string",
-            "example": "AAAAAMMMWOOYSMSjMSKMSMSSSSSSSSSSSSSSSFFFFFFFFF=="
+            "example": "ODg4NTU3MDY0OGMyM2UyNmU4NjA0NmZlODY5Nzk5NDUwN2E2NzZmMDZiM2RiNjJhZjI5NzJkMDIwZGU2YzMwNg=="
           }
         }
       },
@@ -553,7 +553,7 @@
         "properties": {
           "developer_key": {
             "type": "string",
-            "example": "AAAAAMMMWOOYSMSjMSKMSMSSSSSSSSSSSSSSSFFFFFFFFF=="
+            "example": "ODg4NTU3MDY0OGMyM2UyNmU4NjA0NmZlODY5Nzk5NDUwN2E2NzZmMDZiM2RiNjJhZjI5NzJkMDIwZGU2YzMwNg=="
           },
           "original_link": {
             "type": "string",
