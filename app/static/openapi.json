@@ -1,0 +1,836 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "shortify",
+    "description": "This is a url-shortener service.",
+    "contact": {
+      "email": "siramk@iitbhilai.ac.in"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://shortify.tech/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "auth",
+      "description": "User Authentication"
+    },
+    {
+      "name": "url-service-dev",
+      "description": "Access url shortener service for developers"
+    },
+    {
+      "name": "url-service",
+      "description": "Access url shortner service from browser"
+    }
+  ],
+  "paths": {
+    "/auth/signup": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "signup for the url-shotener service",
+        "operationId": "signup",
+        "requestBody": {
+          "description": "user details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Credentials"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful signup",
+            "content": {}
+          },
+          "400": {
+            "description": "ERROR response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Login into the url-shortener service",
+        "operationId": "login",
+        "requestBody": {
+          "description": "user details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Credentials"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/auth/verify": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "verification of user with otp",
+        "operationId": "verify",
+        "requestBody": {
+          "description": "verification details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerificationCreds"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "verification successful",
+            "content": {}
+          },
+          "400": {
+            "description": "Error Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/auth/get_dev_key": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "get developer key",
+        "operationId": "getDevKey",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDevKeyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ERROR response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHORIZED request",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ]
+      }
+    },
+    "/generate_url_dev": {
+      "post": {
+        "tags": [
+          "url-service-dev"
+        ],
+        "summary": "Create short url for any url",
+        "operationId": "GenerateUrlDev",
+        "requestBody": {
+          "description": "Details for generating short url",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateUrlDev"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateUrlDevResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateUrlDevError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/url_dev/{alias}": {
+      "get": {
+        "tags": [
+          "url-service-dev"
+        ],
+        "summary": "Get the original URL",
+        "operationId": "UrlDev",
+        "parameters": [
+          {
+            "name": "alias",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Only alias",
+            "example": "djiwej"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UrlDevResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UrlDevError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_my_urls_dev": {
+      "get": {
+        "tags": [
+          "url-service-dev"
+        ],
+        "summary": "Give all the urls of the developer",
+        "operationId": "GetMyUrlsDev",
+        "parameters": [
+          {
+            "name": "developer_key",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "AAAAAMMMWOOYSMSjMSKMSMSSSSSSSSSSSSSSSFFFFFFFFF=="
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyUrlsDevResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyUrlsDevError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/delete_url_dev": {
+      "delete": {
+        "tags": [
+          "url-service-dev"
+        ],
+        "summary": "Delete the shortened URL",
+        "operationId": "DeleteUrlDev",
+        "parameters": [
+          {
+            "name": "developer_key",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "AAAAAMMMWOOYSMSjMSKMSMSSSSSSSSSSSSSSSFFFFFFFFF=="
+          },
+          {
+            "name": "alias",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "djiwej"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteUrlDevResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteUrlDevError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/generate_url": {
+      "post": {
+        "tags": [
+          "url-service"
+        ],
+        "summary": "Create short url for any url",
+        "operationId": "GenerateUrl",
+        "requestBody": {
+          "description": "Details for generating short url",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateUrl"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateUrlResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateUrlError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ]
+      }
+    },
+    "/url/{alias}": {
+      "get": {
+        "tags": [
+          "url-service"
+        ],
+        "summary": "Get the original URL",
+        "operationId": "Url",
+        "parameters": [
+          {
+            "name": "alias",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Only alias",
+            "example": "djiwej"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UrlDevResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UrlDevError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ]
+      }
+    },
+    "/get_my_urls": {
+      "get": {
+        "tags": [
+          "url-service"
+        ],
+        "summary": "Give all the urls of the developer",
+        "operationId": "GetMyUrls",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyUrlsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyUrlsError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ]
+      }
+    },
+    "/delete_url": {
+      "delete": {
+        "tags": [
+          "url-service"
+        ],
+        "summary": "Delete the shortened URL",
+        "operationId": "DeleteUrl",
+        "parameters": [
+          {
+            "name": "alias",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "djiwej"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteUrlResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteUrlError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Credentials": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "joe@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "Hello@#World1234"
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "asahsaaaalsklla.allsks.ajss...."
+          }
+        }
+      },
+      "GetDevKeyResponse": {
+        "type": "object",
+        "properties": {
+          "developer_key": {
+            "type": "string",
+            "example": "AAAAAMMMWOOYSMSjMSKMSMSSSSSSSSSSSSSSSFFFFFFFFF=="
+          }
+        }
+      },
+      "VerificationCreds": {
+        "type": "object",
+        "properties": {
+          "otp": {
+            "type": "integer",
+            "format": "int32",
+            "example": 123456
+          },
+          "email": {
+            "type": "string",
+            "example": "joe@gmail.com"
+          }
+        }
+      },
+      "GenerateUrlDev": {
+        "type": "object",
+        "required": [
+          "developer_key",
+          "original_link"
+        ],
+        "properties": {
+          "developer_key": {
+            "type": "string",
+            "example": "AAAAAMMMWOOYSMSjMSKMSMSSSSSSSSSSSSSSSFFFFFFFFF=="
+          },
+          "original_link": {
+            "type": "string",
+            "example": "https://www.google.com/"
+          },
+          "custom_alias": {
+            "type": "string",
+            "description": "The length of an alias should be between 6 and 10 characters (included)",
+            "example": "pqrstuv"
+          },
+          "expiry_duration": {
+            "type": "integer",
+            "description": "The expiry period should be between 1 day and 30 days (included)",
+            "example": 10
+          }
+        }
+      },
+      "GenerateUrlDevResponse": {
+        "type": "object",
+        "properties": {
+          "shortened_link": {
+            "type": "string",
+            "example": "https://shortify.tech/url/djiwej"
+          }
+        }
+      },
+      "GenerateUrlDevError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "CUSTOM alias already exist!!"
+          }
+        }
+      },
+      "UrlDevResponse": {
+        "type": "object",
+        "properties": {
+          "original_link": {
+            "type": "string",
+            "example": "https://www.google.com/"
+          },
+          "is_malicious": {
+            "type": "boolean",
+            "example": true
+          },
+          "class_of_malicious_link": {
+            "type": "string",
+            "example": "phishing"
+          }
+        }
+      },
+      "UrlDevError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Invalid shortened link"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Invalid ......"
+          }
+        }
+      },
+      "GetMyUrlsDevResponse": {
+        "type": "object",
+        "properties": {
+          "user_links": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "original_link": {
+                  "type": "string",
+                  "example": "https://www.google.com/"
+                },
+                "shortened_link": {
+                  "type": "string",
+                  "example": "https://shortify.tech/url/djiwej"
+                },
+                "created_at": {
+                  "type": "string",
+                  "example": "2022-01-15T10:42:12.545666+00:00"
+                },
+                "expiry_duration": {
+                  "type": "integer",
+                  "example": 5
+                }
+              }
+            }
+          }
+        }
+      },
+      "GetMyUrlsDevError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Invalid user"
+          }
+        }
+      },
+      "DeleteUrlDevResponse": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "string",
+            "example": "URL Removed"
+          }
+        }
+      },
+      "DeleteUrlDevError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Invalid shortened link"
+          }
+        }
+      },
+      "GenerateUrl": {
+        "type": "object",
+        "required": [
+          "original_link"
+        ],
+        "properties": {
+          "original_link": {
+            "type": "string",
+            "example": "https://www.google.com/"
+          },
+          "custom_alias": {
+            "type": "string",
+            "description": "The length of an alias should be between 6 and 10 characters (included)",
+            "example": "pqrstuv"
+          },
+          "expiry_duration": {
+            "type": "integer",
+            "description": "The expiry period should be between 1 day and 30 days (included)",
+            "example": 10
+          }
+        }
+      },
+      "GenerateUrlResponse": {
+        "type": "object",
+        "properties": {
+          "shortened_link": {
+            "type": "string",
+            "example": "https://shortify.tech/url/djiwej"
+          }
+        }
+      },
+      "GenerateUrlError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "CUSTOM alias already exist!!"
+          }
+        }
+      },
+      "GetMyUrlsResponse": {
+        "type": "object",
+        "properties": {
+          "user_links": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "original_link": {
+                  "type": "string",
+                  "example": "https://www.google.com/"
+                },
+                "shortened_link": {
+                  "type": "string",
+                  "example": "https://shortify.tech/url/djiwej"
+                },
+                "created_at": {
+                  "type": "string",
+                  "example": "2022-01-15T10:42:12.545666+00:00"
+                },
+                "expiry_duration": {
+                  "type": "integer",
+                  "example": 5
+                }
+              }
+            }
+          }
+        }
+      },
+      "GetMyUrlsError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Invalid user"
+          }
+        }
+      },
+      "DeleteUrlResponse": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "string",
+            "example": "URL Removed"
+          }
+        }
+      },
+      "DeleteUrlError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Invalid shortened link"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "JWTAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
