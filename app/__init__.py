@@ -7,6 +7,11 @@ from .auth.routes import initialize_routes
 from app.url_service.routes import url_service_routes
 from app.swagger.routes import initialize_swagger_routes
 from flask_cors import CORS
+import logging
+import faulthandler
+faulthandler.enable()
+
+print("====================in init.py========================")
 
 
 # Define the WSGI application object
@@ -23,3 +28,8 @@ jwt = JWTManager(app)
 initialize_routes(api)
 url_service_routes(api)
 initialize_swagger_routes(api)
+
+gunicorn_error_logger = logging.getLogger('gunicorn.error')
+app.logger.handlers.extend(gunicorn_error_logger.handlers)
+app.logger.setLevel(logging.DEBUG)
+app.logger.debug('from app/__init__.py | this will show in the log|================')
