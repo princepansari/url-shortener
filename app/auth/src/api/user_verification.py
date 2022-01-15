@@ -17,6 +17,9 @@ class UserVerification(Resource):
         }, ignore_extra_keys=True)
 
     def post(self):
+        if not self.schema.is_valid(request.get_json()):
+            return {'error': 'Invalid Input'}, HTTPStatus.BAD_REQUEST
+
         data = self.schema.validate(request.get_json())
         email = data['email']
         verified = self.check_otp(given_otp=data['otp'], email=email)
