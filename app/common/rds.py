@@ -131,12 +131,14 @@ class RDS:
         cursor = self.connection.cursor()
         if expiry_duration:
             query = "INSERT INTO creations (user_id, original_link, shortened_link, expiry_duration)" \
-                    " VALUES (%s, %s,%s, %s)"
+                    " VALUES (%s, %s,%s, %s) ON CONFLICT (shortened_link) DO NOTHING"
             cursor.execute(query, [user_id, original_link, shortened_link, expiry_duration])
         else:
-            query = "INSERT INTO creations (user_id, original_link, shortened_link) VALUES (%s, %s,%s)"
+            query = "INSERT INTO creations (user_id, original_link, shortened_link) VALUES (%s, %s,%s)" \
+                    "ON CONFLICT (shortened_link) DO NOTHING"
             cursor.execute(query, [user_id, original_link, shortened_link])
         self.connection.commit()
+        return True if cursor.rowcount else False
 
     def get_user_links(self, *, user_id):
         def get_cursor():
