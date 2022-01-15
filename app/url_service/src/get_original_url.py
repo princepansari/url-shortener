@@ -14,7 +14,7 @@ class GetOriginalUrl(Resource):
             # TODO - change the json output to the html page for invalid link
             return {'error': 'Invalid shortened link'}, HTTPStatus.BAD_REQUEST
 
-        is_malicious, malicious_class = GetOriginalUrlUtils.is_malicious_link(self.rds, original_link)
+        is_malicious, malicious_class = GetOriginalUrlUtils.is_malicious_link(rds=self.rds, link=original_link)
 
         if is_malicious:
             # TODO - change the json output to the html page for malicious link
@@ -34,7 +34,7 @@ class GetOriginalUrlDev(Resource):
         if original_link is None:
             return {'error': 'Invalid shortened link'}, HTTPStatus.BAD_REQUEST
 
-        is_malicious, malicious_class = GetOriginalUrlUtils.is_malicious_link(self.rds, original_link)
+        is_malicious, malicious_class = GetOriginalUrlUtils.is_malicious_link(rds=self.rds, link=original_link)
 
         return {'original_link': original_link,
                 'is_malicious': is_malicious,
