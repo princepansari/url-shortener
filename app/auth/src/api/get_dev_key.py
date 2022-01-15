@@ -16,16 +16,16 @@ class GetDevKey(Resource):
     def get(self):
         email = get_jwt_identity()
         user = self.rds.get_user(email=email)
-        developer_key = self.get_developer_key(email)
-        developer_key_hash = self.hash(developer_key)
+        developer_key = self.get_developer_key(email=email)
+        developer_key_hash = self.hash(input=developer_key)
         self.rds.upsert_dev_key(user_id=user['user_id'],
-                             developer_key=developer_key_hash)
+                                developer_key=developer_key_hash)
         return {'developer_key': developer_key}, HTTPStatus.OK
 
-    def get_developer_key(self, email):
-        hashed_key = self.hash(email + self.DEVELOPER_KEY_GEN_SECRET)
+    def get_developer_key(self, *, email):
+        hashed_key = self.hash(input=email + self.DEVELOPER_KEY_GEN_SECRET)
         developer_key = base64.b64encode(hashed_key.encode("ascii")).decode("ascii")
         return developer_key
 
-    def hash(self, input):
+    def hash(self, *, input):
         return hashlib.sha256(input.encode()).hexdigest()
