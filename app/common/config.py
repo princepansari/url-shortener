@@ -7,6 +7,7 @@ logger.setLevel(logging.INFO)
 class Config:
 
     DOMAIN_NAME = os.environ.get("DOMAIN_NAME") or "https://shortify.tech/"
+    COMPANY_NAME = os.environ.get("COMPANY_NAME") or "shortify"
     READ_URL = DOMAIN_NAME + "url/"
     # Common config
     TMP_DIR = os.environ.get("TMP_DIR") or "/tmp"
@@ -38,3 +39,6 @@ class Config:
     SECRET_ENCODE = os.environ.get("SECRET_ENCODE") or "aEjFb182bHUWsuibJBXBVZDHU"
     MIN_EXPIRY_DURATION = os.environ.get("MIN_EXPIRY_DURATION") or 1
     MAX_EXPIRY_DURATION = os.environ.get("MAX_EXPIRY_DURATION") or 30
+
+    #OTP config
+    OTP_DIGIT_SPACE = os.environ.get('OTP_DIGIT_SPACE') or '0123456789'
