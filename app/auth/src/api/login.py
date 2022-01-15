@@ -26,14 +26,17 @@ class LoginApi(Resource):
         password = data['password']
         user = self.rds.get_user(email=email)
 
+        if not user:
+            return {'error': 'Email or password invalid'}, HTTPStatus.BAD_REQUEST
+
         if not user['verified']:
-            return {'error': 'User verification not completed'}, HTTPStatus.UNAUTHORIZED
+            return {'error': 'User verification not completed'}, HTTPStatus.BAD_REQUEST
 
         password_hash = user['password']
         authorized = self.check_password(password_hash=password_hash, password=password)
 
         if not authorized:
-            return {'error': 'Email or password invalid'}, HTTPStatus.UNAUTHORIZED
+            return {'error': 'Email or password invalid'}, HTTPStatus.BAD_REQUEST
 
         self.rds.update_last_login(email=user['email'])
         expires = datetime.timedelta(days=Config.EXPIRE_AFTER_DAYS)
