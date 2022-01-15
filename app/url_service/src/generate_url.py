@@ -79,18 +79,15 @@ class UtilsURL:
             return {'error': 'Invalid URL'}, HTTPStatus.BAD_REQUEST
 
         if custom_alias:
-            exist = rds.is_shortened_link_exists(shortened_link=custom_alias)
-            if exist:
+            check = rds.add_shortened_link(user_id=user_id, original_link=original_link,
+                                           shortened_link=custom_alias, expiry_duration=expiry_duration)
+            if not check:
                 return {'error': 'CUSTOM alias already exist!!'}, HTTPStatus.BAD_REQUEST
             shortened_link = custom_alias
         else:
             alias = Utils.encode(url=original_link)
-            while rds.is_shortened_link_exists(shortened_link=alias):
+            while not rds.add_shortened_link(user_id=user_id, original_link=original_link,
+                                             shortened_link=alias, expiry_duration=expiry_duration):
                 alias = Utils.encode(url=original_link)
             shortened_link = alias
-
-        rds.add_shortened_link(user_id=user_id,
-                               original_link=original_link,
-                               shortened_link=shortened_link,
-                               expiry_duration=expiry_duration)
         return {'shortened_link': Config.READ_URL + shortened_link}, HTTPStatus.OK

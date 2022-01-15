@@ -3,6 +3,7 @@ import boto3
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from app.common.config import Config
+from app.common.utilities import Utils
 import hashlib
 
 class RDS:
@@ -123,12 +124,14 @@ class RDS:
         cursor = self.connection.cursor()
         if expiry_duration:
             query = "INSERT INTO creations (user_id, original_link, shortened_link, expiry_duration)" \
-                    " VALUES (%s, %s,%s, %s)"
+                    " VALUES (%s, %s,%s, %s) ON CONFLICT (shortened_link) DO NOTHING"
             cursor.execute(query, [user_id, original_link, shortened_link, expiry_duration])
         else:
-            query = "INSERT INTO creations (user_id, original_link, shortened_link) VALUES (%s, %s,%s)"
+            query = "INSERT INTO creations (user_id, original_link, shortened_link) VALUES (%s, %s,%s)" \
+                    "ON CONFLICT (shortened_link) DO NOTHING"
             cursor.execute(query, [user_id, original_link, shortened_link])
         self.connection.commit()
+        return True if cursor.rowcount else False
 
     def get_user_links(self, *, user_id):
         def get_cursor():
@@ -143,12 +146,13 @@ class RDS:
             row = cursor.fetchone()
             if not row:
                 break
-            user_links['user_links'].append({
-                'original_link': row['original_link'],
-                'shortened_link': Config.READ_URL + row['shortened_link'],
-                'created_at': row['created_at'].isoformat(),
-                'expiry_duration': row['expiry_duration']
-            })
+            if not Utils.is_expired(creation_time=row['created_at'], expiry_duration=row['expiry_duration']):
+                user_links['user_links'].append({
+                    'original_link': row['original_link'],
+                    'shortened_link': Config.READ_URL + row['shortened_link'],
+                    'created_at': row['created_at'].isoformat(),
+                    'expiry_duration': row['expiry_duration']
+                })
         return user_links
 
     def delete_shortened_link(self, *, user_id, shortened_link):
@@ -160,10 +164,12 @@ class RDS:
 
     def get_original_link(self, *, shortened_link):
         cursor = self.connection.cursor(cursor_factory=RealDictCursor)
-        query = "SELECT original_link FROM creations WHERE shortened_link=%s"
+        query = "SELECT * FROM creations WHERE shortened_link=%s"
         cursor.execute(query, [shortened_link])
         data = cursor.fetchone()
-        return data['original_link'] if data else None
+        if data and not Utils.is_expired(creation_time=data['created_at'], expiry_duration=data['expiry_duration']):
+            return data['original_link']
+        return None
 
 
     def get_link_detail(self, *, link):
