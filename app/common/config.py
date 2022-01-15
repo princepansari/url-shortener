@@ -32,5 +32,9 @@ class Config:
     EXPIRE_AFTER_DAYS = os.environ.get('EXPIRE_AFTER_DAYS') or 7
 
     #URL Service
+    CHARACTERS_FOR_ALIAS = os.environ.get("CHARACTERS_FOR_ALIAS") or "23456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ "
     URL_LENGTH = os.environ.get("URL_LENGTH") or 6
+    MAX_URL_LENGTH = os.environ.get("MAX_URL_LENGTH") or 10
     SECRET_ENCODE = os.environ.get("SECRET_ENCODE") or "aEjFb182bHUWsuibJBXBVZDHU"
+    MIN_EXPIRY_DURATION = os.environ.get("MIN_EXPIRY_DURATION") or 1
+    MAX_EXPIRY_DURATION = os.environ.get("MAX_EXPIRY_DURATION") or 30

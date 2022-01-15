@@ -3,6 +3,8 @@ from flask_restful import Resource
 from http import HTTPStatus
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.common.rds import RDS
+from schema import Schema, And, Use
+import bleach
 
 
 class GetMyUrls(Resource):
@@ -19,9 +21,15 @@ class GetMyUrls(Resource):
 class GetMyUrlsDev(Resource):
     def __init__(self):
         self.rds = RDS()
+        self.schema = Schema({
+            'developer_key': And(str,  Use(bleach.clean), len)
+        })
 
     def get(self):
-        developer_key = request.args['developer_key']
+        if not self.schema.is_valid(request.args.to_dict()):
+            return {'error': 'Invalid payload'}, HTTPStatus.BAD_REQUEST
+        data = self.schema.validate(request.args.to_dict())
+        developer_key = data['developer_key']
         user_id = self.rds.get_user_by_key(developer_key=developer_key)
         if user_id is None:
             return {'error': 'Invalid user'}, HTTPStatus.UNAUTHORIZED
