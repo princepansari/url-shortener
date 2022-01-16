@@ -9,6 +9,8 @@ class Config:
     DOMAIN_NAME = os.environ.get("DOMAIN_NAME") or "https://shortify.tech/"
     COMPANY_NAME = os.environ.get("COMPANY_NAME") or "shortify"
     READ_URL = DOMAIN_NAME + "url/"
+    NETLOC1 = os.environ.get("NETLOC1") or "shortify.tech"
+    NETLOC2 = os.environ.get("NETLOC2") or "www.shortify.tech"
     # Common config
     TMP_DIR = os.environ.get("TMP_DIR") or "/tmp"
     ENV = os.environ.get("ENV") or "test"
