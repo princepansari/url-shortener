@@ -72,7 +72,9 @@ class UtilsURL:
 
     @staticmethod
     def get_short_url(*, rds, user_id, original_link, custom_alias, expiry_duration):
-        if original_link.startswith(Config.DOMAIN_NAME):
+        original_link_without_http_and_https = original_link.replace('https://', '').replace('http://', '')
+        if original_link_without_http_and_https.startswith(Config.NETLOC1) \
+                or original_link_without_http_and_https.startswith(Config.NETLOC2):
             return {'error': 'This domain is banned'}, HTTPStatus.BAD_REQUEST
 
         if not Utils.is_valid_url(url=original_link):
