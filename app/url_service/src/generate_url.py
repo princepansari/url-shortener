@@ -77,7 +77,8 @@ class UtilsURL:
                 or original_link_without_http_and_https.startswith(Config.NETLOC2):
             return {'error': 'This domain is banned'}, HTTPStatus.BAD_REQUEST
 
-        if not Utils.is_valid_url(url=original_link):
+        original_link = Utils.valid_url(url=original_link)
+        if original_link is None:
             return {'error': 'Invalid URL'}, HTTPStatus.BAD_REQUEST
 
         if custom_alias:

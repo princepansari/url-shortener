@@ -65,12 +65,12 @@ class Utils:
         return None
 
     @staticmethod
-    def is_valid_url(*, url):
+    def valid_url(*, url):
         if validators.url(url):
-            return True
-        if not url.startswith("http") and validators.url("https://" + url):
-            return True
-        return False
+            return url
+        if not url.startswith("http") and validators.url("http://" + url):
+            return "http://" + url
+        return None
 
     @staticmethod
     def is_expired(*, creation_time, expiry_duration):
