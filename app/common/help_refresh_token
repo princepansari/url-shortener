@@ -1,0 +1,13 @@
+client_id = 393388259530-e13a3lv6fje5mc87itt3d9fkj83j3gaa.apps.googleusercontent.com
+client_secret = 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
+
+
+https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/gmail.send&access_type=offline&redirect_uri=http://localhost&response_type=code&client_id=393388259530-e13a3lv6fje5mc87itt3d9fkj83j3gaa.apps.googleusercontent.com
+
+
+# Just change the code in curl command to get a new refresh token
+
+curl \
+--request POST \
+--data "code=4%2F0AX4XfWgRKTub-j1OpBEBLENzzU6d7-stndLzGpCuV0u-eqQ20T7sSy5Nmwf-7CCIqf67Rw&client_id=393388259530-e13a3lv6fje5mc87itt3d9fkj83j3gaa.apps.googleusercontent.com&client_secret=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&redirect_uri=http://localhost&grant_type=authorization_code" \
+https://accounts.google.com/o/oauth2/token

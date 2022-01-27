@@ -16,8 +16,8 @@ class Config:
     ENV = os.environ.get("ENV") or "test"
 
     # RDS config
-    REGION = os.environ.get("REGION") or "us-east-2"
-    RDS_ENDPOINT = os.environ.get("RDS_ENDPOINT") or "mydatabase.cvqngijdukip.us-east-2.rds.amazonaws.com"
+    REGION = os.environ.get("REGION") or "ap-south-1"
+    RDS_ENDPOINT = os.environ.get("RDS_ENDPOINT") or "mydatabase.cqmwdr81v2nj.ap-south-1.rds.amazonaws.com"
     PORT = os.environ.get("PORT") or "5432"
     DBUSER = os.environ.get("DBUSER") or "unicorn"
     DATABASE = os.environ.get("DATABASE") or "unicorn_db"
@@ -27,7 +27,7 @@ class Config:
     FROM_EMAIL = "shortify.tech@gmail.com"
     GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID") or "393388259530-e13a3lv6fje5mc87itt3d9fkj83j3gaa.apps.googleusercontent.com"
     GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET") or "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"
-    REFRESH_TOKEN = os.environ.get("REFRESH_TOKEN") or "1//04eHJ8tySHcAoCgYIARAAGAQSNwF-L9IrBT3fOprU0yW0Arsy5brsrwFuQP5JH4MtIarWApQX-D_WPRl6N7zMlzD-2OAH-yDP9Bo"
+    REFRESH_TOKEN = os.environ.get("REFRESH_TOKEN") or "1//0gBXrnPpfPkutCgYIARAAGBASNwF-L9IrsC_r-F-JF-oYan-qXNzdZU3vi22U0-ELNYEXPQtlDIGrB4VG-8htudwFUnUAz7-7O08"
     #dev key gen config
     DEVELOPER_KEY_GEN_SECRET = os.environ.get('DEVELOPER_KEY_GEN_SECRET') or "AAXCDESA"
 
