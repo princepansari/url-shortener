@@ -12,6 +12,6 @@ permissions:
 
 hooks:
   AfterInstall:
-    - location: /home/ubuntu/url-shortener/restart_server.sh
+    - location: restart_server.sh
       timeout: 300
       runas: ubuntu
