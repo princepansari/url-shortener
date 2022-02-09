@@ -14,6 +14,15 @@ class Utils:
         return re.fullmatch(regex, email)
 
     @staticmethod
+    def validate_otp(otp):
+        if len(otp) != 6:
+            return False
+        for i in range(6):
+            if not otp[i].isdigit():
+                return False
+        return True
+
+    @staticmethod
     def validate_password(password):
         if (len(password) >= 8):
             lower = upper = special = digit = 0
