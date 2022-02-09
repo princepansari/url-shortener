@@ -1,0 +1,50 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TABLE users (
+	user_id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+	email VARCHAR ( 255 ) UNIQUE NOT NULL,
+	password VARCHAR ( 255 ) NOT NULL,
+	created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	verified BOOLEAN DEFAULT FALSE NOT NULL,
+	last_login TIMESTAMPTZ
+);
+
+CREATE TABLE developer_keys (
+    user_id uuid PRIMARY KEY,
+    developer_key VARCHAR ( 255 ) UNIQUE NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (user_id)
+);
+CREATE TABLE signup_verification(
+	user_id uuid PRIMARY KEY,
+	otp VARCHAR (6) NOT NULL,
+	created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	FOREIGN KEY (user_id) REFERENCES users (user_id)
+);
+
+
+CREATE TABLE malicious_links(
+	id serial PRIMARY KEY,
+	link TEXT NOT NULL,
+    class_of_malicious_link VARCHAR (50)
+);
+
+CREATE TABLE creations(
+	creation_id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+	user_id uuid NOT NULL,
+	original_link VARCHAR ( 500 ) NOT NULL,
+	shortened_link VARCHAR ( 255 ) UNIQUE NOT NULL,
+	created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	expiry_duration INT DEFAULT 30 NOT NULL,
+	FOREIGN KEY (user_id) REFERENCES users (user_id)
+);
+
+CREATE INDEX creations_shortened_link_hash ON creations USING hash(shortened_link);
+CREATE TRIGGER update_updated_at BEFORE UPDATE ON users FOR EACH ROW EXECUTE PROCEDURE  trigger_set_timestamp_users();
+CREATE OR REPLACE  FUNCTION trigger_set_timestamp_users()
+        RETURNS TRIGGER AS $$
+        BEGIN
+        NEW.updated_at = NOW();
+        RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;
