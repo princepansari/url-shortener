@@ -534,9 +534,8 @@
         "type": "object",
         "properties": {
           "otp": {
-            "type": "integer",
-            "format": "int32",
-            "example": 123456
+            "type": "string",
+            "example": "123456"
           },
           "email": {
             "type": "string",
