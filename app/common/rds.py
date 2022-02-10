@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import boto3
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -172,10 +172,37 @@ class RDS:
             return data['original_link']
         return None
 
-
     def get_link_detail(self, *, link):
         cursor = self.connection.cursor(cursor_factory=RealDictCursor)
         query = "SELECT * FROM malicious_links WHERE link=%s"
         cursor.execute(query, [link])
         link_detail = cursor.fetchone()
         return link_detail
+
+    def update_quota(self, *, user_id):
+        cursor = self.connection.cursor(cursor_factory=RealDictCursor)
+        query = "SELECT * FROM user_quota WHERE user_id=%s"
+        cursor.execute(query, [user_id])
+        data = cursor.fetchone()
+        if not data:
+            query = "INSERT INTO user_quota (user_id) VALUES (%s)"
+            cursor.execute(query, [user_id])
+            self.connection.commit()
+        if data['last_updated'] + timedelta(hours=24) < datetime.now(timezone.utc):
+            query = "UPDATE user_quota SET quota=%s, last_updated=%s WHERE user_id=%s"
+            cursor.execute(query, [0, datetime.now(timezone.utc), user_id])
+            self.connection.commit()
+        query = "UPDATE user_quota SET quota=quota+1 WHERE user_id=%s"
+        try:
+            cursor.execute(query, [user_id])
+        except psycopg2.Error as e:
+            self.connection.commit()
+            return False
+        self.connection.commit()
+        return True
+
+    def subtract_used_quota(self, *, user_id):
+        cursor = self.connection.cursor()
+        query = "UPDATE user_quota SET quota=quota-1 WHERE user_id=%s"
+        cursor.execute(query, [user_id])
+        self.connection.commit()

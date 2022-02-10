@@ -81,10 +81,14 @@ class UtilsURL:
         if original_link is None:
             return {'error': 'Invalid URL'}, HTTPStatus.BAD_REQUEST
 
+        if not rds.update_quota(user_id=user_id):
+            return {'error': 'Quota exceeded'}, HTTPStatus.BAD_REQUEST
+
         if custom_alias:
             check = rds.add_shortened_link(user_id=user_id, original_link=original_link,
                                            shortened_link=custom_alias, expiry_duration=expiry_duration)
             if not check:
+                rds.subtract_used_quota(user_id=user_id)
                 return {'error': 'CUSTOM alias already exist!!'}, HTTPStatus.BAD_REQUEST
             shortened_link = custom_alias
         else:
