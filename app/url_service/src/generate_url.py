@@ -88,7 +88,7 @@ class UtilsURL:
             check = rds.add_shortened_link(user_id=user_id, original_link=original_link,
                                            shortened_link=custom_alias, expiry_duration=expiry_duration)
             if not check:
-                rds.subtract_used_quota(user_id=user_id)
+                rds.subtract_user_quota(user_id=user_id)
                 return {'error': 'CUSTOM alias already exist!!'}, HTTPStatus.BAD_REQUEST
             shortened_link = custom_alias
         else:

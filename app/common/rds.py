@@ -201,7 +201,7 @@ class RDS:
         self.connection.commit()
         return True
 
-    def subtract_used_quota(self, *, user_id):
+    def subtract_user_quota(self, *, user_id):
         cursor = self.connection.cursor()
         query = "UPDATE user_quota SET quota=quota-1 WHERE user_id=%s"
         cursor.execute(query, [user_id])
