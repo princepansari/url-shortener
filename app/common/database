@@ -36,6 +36,7 @@ CREATE TABLE creations(
 	shortened_link VARCHAR ( 255 ) UNIQUE NOT NULL,
 	created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	expiry_duration INT DEFAULT 30 NOT NULL,
+	visits INT DEFAULT 0 NOT NULL,
 	FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
