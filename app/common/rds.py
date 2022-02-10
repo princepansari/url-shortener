@@ -137,7 +137,7 @@ class RDS:
     def get_user_links(self, *, user_id):
         def get_cursor():
             cursor = self.connection.cursor(cursor_factory=RealDictCursor)
-            query = "SELECT original_link, shortened_link, created_at, expiry_duration " \
+            query = "SELECT original_link, shortened_link, created_at, expiry_duration, visits " \
                     "FROM creations WHERE user_id=%s"
             cursor.execute(query, [user_id])
             return cursor
@@ -166,12 +166,13 @@ class RDS:
 
     def get_original_link(self, *, shortened_link):
         cursor = self.connection.cursor(cursor_factory=RealDictCursor)
-        query = "UPDATE creations SET visits = visits + 1 WHERE shortened_link=%s RETURNING *"
+        query = "UPDATE creations SET visits=visits+1 WHERE shortened_link=%s RETURNING *"
         try:
             cursor.execute(query, [shortened_link])
         except psycopg2.Error as e:
             self.connection.commit()
             return None
+        self.connection.commit()
         data = cursor.fetchone()
         if data and not Utils.is_expired(creation_time=data['created_at'], expiry_duration=data['expiry_duration']):
             return data['original_link']
