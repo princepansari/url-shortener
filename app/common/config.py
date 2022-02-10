@@ -6,7 +6,7 @@ logger.setLevel(logging.INFO)
 
 class Config:
 
-    DOMAIN_NAME = os.environ.get("DOMAIN_NAME") or "https://shortify.tech/"
+    DOMAIN_NAME = os.environ.get("DOMAIN_NAME") or "http://127.0.0.1:8080/"
     COMPANY_NAME = os.environ.get("COMPANY_NAME") or "shortify"
     READ_URL = DOMAIN_NAME + "url/"
     NETLOC1 = os.environ.get("NETLOC1") or "shortify.tech"
