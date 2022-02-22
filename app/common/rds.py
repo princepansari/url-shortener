@@ -194,7 +194,7 @@ class RDS:
             query = "INSERT INTO user_quota (user_id) VALUES (%s)"
             cursor.execute(query, [user_id])
             self.connection.commit()
-        if data['last_updated'] + timedelta(hours=24) < datetime.now(timezone.utc):
+        elif data['last_updated'] + timedelta(hours=24) < datetime.now(timezone.utc):
             query = "UPDATE user_quota SET quota=%s, last_updated=%s WHERE user_id=%s"
             cursor.execute(query, [0, datetime.now(timezone.utc), user_id])
             self.connection.commit()
